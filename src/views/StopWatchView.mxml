@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx"
+		viewActivate="onActivate(event)"
+		viewDeactivate="onDeactivate(event)"
+		>
+	<s:states>
+		<s:State name="State1"/>
+		<s:State name="started"/>
+		<s:State name="stopped"/>
+	</s:states>
+	<fx:Declarations>
+		 
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.getTimer;
+			
+			import spark.events.ViewNavigatorEvent;
+			import spark.managers.PersistenceManager;
+			
+			protected var timer:Timer;
+			protected var count:int=0;
+			protected var pm:PersistenceManager;
+			
+			protected function onActivate(event:ViewNavigatorEvent):void{
+				timer = new Timer(1000,0);
+				timer.addEventListener(TimerEvent.TIMER, onTimer);
+				
+			}
+			
+			protected function onDeactivate(event:ViewNavigatorEvent):void
+			{
+				
+				timer.stop();
+				timer.removeEventListener(TimerEvent.TIMER, onTimer);
+				timer = null;
+			}
+			
+			protected function onTimer(event:TimerEvent = null):void{
+				timerLabel.text = formatTime(timer.currentCount);
+				trace('count: ' + timer.currentCount);
+			}
+			protected function formatTime(i:int):String{
+				
+				if ( i < 60 ){
+					return "00:00:" + leadZero(i%60);
+				}else if ( i < 60*60 ){
+					return "00:" + leadZero(i/60) + ":" + leadZero(i%60);
+				}else if ( i < 100*60*60 ){
+					return leadZero(i/(60*60)) + ":" + leadZero((i/60)%60) + ":" + leadZero(i%60);
+				}
+				return "99:59:59";
+			}
+			protected function leadZero(i:int):String{
+				if ( i < 10){
+					return "0" + i;
+				}else{
+					return i.toString();
+				}
+			}
+			protected function onFirstStart():void{
+				onStart();
+			}
+			protected function onStart():void{
+				currentState='started'
+				timer.start();
+			}
+			protected function onStop():void{
+				currentState='stopped'
+				timer.stop();
+			}
+			protected function onReset():void{
+				currentState=''
+				timerLabel.text ="00:00:00"
+				timer.reset();
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Label id="timerLabel" styleName="timeDisplay" horizontalCenter="0" verticalCenter="-80" text="00:00:00" />
+	<s:VGroup horizontalCenter="0" y="{timerLabel.y+100}">
+		<s:Button 
+			label="Start"
+			label.started="STOP" 
+			label.stopped="START" 
+			click.stopped="onStart()"
+			click.started="onStop()"
+			click.State1="onFirstStart()"
+			
+			width="250" 
+			height="75"/>
+		<s:Button includeIn="stopped" width="250" height="75" label="RESET"
+				  click="onReset()"/>
+	</s:VGroup>
+	
+</s:View>

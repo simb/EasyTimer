@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx"
+		viewActivate="onActivate(event)"
+		viewDeactivate="onDeactivate(event)"
+		>
+	<fx:Declarations>
+		<mx:DateFormatter id="df" formatString="HH:NN:SS" />
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import spark.events.ViewNavigatorEvent;
+			
+			protected var timer:Timer;
+			
+			
+			protected function onActivate(event:ViewNavigatorEvent):void{
+				timer = new Timer(1000,0);
+				timer.addEventListener(TimerEvent.TIMER, onTimer);
+				timer.start();
+				onTimer();
+			}
+			
+			protected function onDeactivate(event:ViewNavigatorEvent):void
+			{
+				timer.stop();
+				timer.removeEventListener(TimerEvent.TIMER, onTimer);
+				timer = null;
+			}
+			
+			protected function onTimer(event:TimerEvent = null):void{
+				timerLabel.text = df.format( new Date() );
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Label id="timerLabel" styleName="timeDisplay" horizontalCenter="0" verticalCenter="0" text="Loading..." />
+</s:View>
