@@ -1,14 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" 
-		xmlns:mx="library://ns.adobe.com/flex/mx">
+		xmlns:s="library://ns.adobe.com/flex/spark" title="Timer" add="onAdd(event)">
+	
+	<s:states>
+		<s:State name="default"/>
+		<s:State name="started"/>
+		<s:State name="stopped"/>
+	</s:states>
+	
 	<fx:Declarations>
-		<mx:DateFormatter id="df" formatString="HH:NN:SS" />
+		
 	</fx:Declarations>
+	
 	<fx:Script>
 		<![CDATA[
-		
+			import flash.utils.Timer;
+			
+			import model.TimeAmount;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.events.ViewNavigatorEvent;
+			
+			private var amount:TimeAmount;
+			private var timer:Timer;
+			
+			protected function onAdd(event:FlexEvent):void
+			{
+				if ( this.navigator.poppedViewReturnedObject ) {
+					amount = this.navigator.poppedViewReturnedObject.object as TimeAmount;
+				} else {
+					amount = new model.TimeAmount(0,0,5);
+				}
+				displayTime();
+				timer = new Timer(1000,amount.totalseconds);
+				timer.addEventListener(TimerEvent.TIMER, onTick);
+				timer.addEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
+			}
+			
+			protected function onTick(event:TimerEvent=null):void 
+			{
+				amount.decrement();
+				displayTime();
+			}
+			protected function onTimerComplete(event:TimerEvent=null):void
+			{
+				currentState='stopped';
+			}
+			
+			protected function displayTime():void
+			{
+				timerLabel.text = leadingZero(amount.timeleft.hours) + ':' + leadingZero(amount.timeleft.minutes) + ':' + leadingZero(amount.timeleft.seconds);
+			}
+			
+			protected function startTimer():void 
+			{
+				currentState='started';
+				timer.start();
+			}
+			
+			protected function reStartTimer():void 
+			{
+				currentState='started';
+				timer.start();
+			}
+			
+			protected function stopTimer():void 
+			{
+				currentState='stopped';
+				timer.stop();
+			}
+			
+			protected function resetTimer():void 
+			{
+				currentState='default';
+				timer.reset();
+				amount.reset();
+				displayTime();
+			}
+			
+			protected function leadingZero(num:Number):String 
+			{
+				if ( num > 9 ) {
+					return num.toString();
+				} else {
+					return '0' + num;
+				}
+			}
+			
 		]]>
 	</fx:Script>
-	<s:Label id="timerLabel" styleName="timeDisplay" horizontalCenter="0" verticalCenter="0" text="00:00:00" />
+	
+	<s:actionContent>
+		<s:Button label="Edit" click="this.navigator.pushView(views.EditTimerView,amount);" />
+	</s:actionContent>
+	
+	<s:Label id="timerLabel" horizontalCenter="0" verticalCenter="-40" text="00:00:00" styleName="timeDisplay" />
+	
+	<s:VGroup horizontalCenter="0" verticalCenter="20" verticalCenter.stopped="45">
+		<s:Button x="124" y="178" width="100" 
+				  label="Start"
+				  click.default="startTimer()" 
+				  click.started="stopTimer()" 
+				  click.stopped="reStartTimer()"
+				  label.started="Stop"
+				  label.stopped="Restart"/>
+		<s:Button includeIn="stopped" x="124" y="256" width="100" label="Reset"
+				  click="resetTimer()"/>
+	</s:VGroup>
+	
 </s:View>

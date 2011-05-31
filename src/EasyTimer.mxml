@@ -4,7 +4,7 @@
 								  persistNavigatorState="true">
 	<s:ViewNavigator width="100%" height="100%" label="Clock" firstView="views.ClockView" title="Easy Timer"/>
 	<s:ViewNavigator label="Chrono" width="100%" height="100%" firstView="views.StopWatchView" title="Easy Timer"/>
-	<!--<s:ViewNavigator label="Timer" width="100%" height="100%" firstView="views.TimerView" title="Easy Timer"/>-->
+	<s:ViewNavigator label="Timer" width="100%" height="100%" firstView="views.TimerView" title="Easy Timer"/>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
