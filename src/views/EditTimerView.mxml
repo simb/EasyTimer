@@ -9,7 +9,6 @@
 	<fx:Script>
 		<![CDATA[
 			import model.TimeAmount;
-			
 			import mx.events.FlexEvent;
 			
 			[Bindable]
@@ -17,9 +16,6 @@
 			
 			override public function createReturnObject():Object {
 				amount = new TimeAmount(hours.value, minutes.value, seconds.value);
-				amount.hours = hours.value;
-				amount.minutes = minutes.value;
-				amount.seconds = seconds.value;
 				return amount;
 			}
 			

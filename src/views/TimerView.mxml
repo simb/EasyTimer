@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" title="Timer" add="onAdd(event)">
+		xmlns:s="library://ns.adobe.com/flex/spark" title="Timer" 
+		add="onAdd(event)"
+		viewDeactivate="onViewDeactivate(event)">
 	
 	<s:states>
 		<s:State name="default"/>
 		<s:State name="started"/>
 		<s:State name="stopped"/>
+		<s:State name="finished"/>
 	</s:states>
 	
 	<fx:Declarations>
@@ -15,16 +18,17 @@
 	<fx:Script>
 		<![CDATA[
 			import flash.utils.Timer;
-			
 			import model.TimeAmount;
-			
 			import mx.events.FlexEvent;
-			
 			import spark.events.ViewNavigatorEvent;
+			
+			[Embed(source="assets/beep-6.mp3")]
+			private var beepSound:Class;
 			
 			private var amount:TimeAmount;
 			private var timer:Timer;
 			
+			/* Setup */
 			protected function onAdd(event:FlexEvent):void
 			{
 				if ( this.navigator.poppedViewReturnedObject ) {
@@ -38,6 +42,16 @@
 				timer.addEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
 			}
 			
+			/* Tear-down */
+			protected function onViewDeactivate(event:ViewNavigatorEvent):void
+			{
+				/* Do some memory management */
+				timer.stop();
+				timer.removeEventListener(TimerEvent.TIMER, onTick);
+				timer.removeEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
+				timer = null;
+			}
+			
 			protected function onTick(event:TimerEvent=null):void 
 			{
 				amount.decrement();
@@ -45,12 +59,14 @@
 			}
 			protected function onTimerComplete(event:TimerEvent=null):void
 			{
-				currentState='stopped';
+				currentState='finished';
+				var snd:Sound = new beepSound() as Sound;
+				snd.play(0,4);
 			}
 			
 			protected function displayTime():void
 			{
-				timerLabel.text = leadingZero(amount.timeleft.hours) + ':' + leadingZero(amount.timeleft.minutes) + ':' + leadingZero(amount.timeleft.seconds);
+				timerLabel.text = amount.FormattedTime;
 			}
 			
 			protected function startTimer():void 
@@ -79,15 +95,6 @@
 				displayTime();
 			}
 			
-			protected function leadingZero(num:Number):String 
-			{
-				if ( num > 9 ) {
-					return num.toString();
-				} else {
-					return '0' + num;
-				}
-			}
-			
 		]]>
 	</fx:Script>
 	
@@ -97,15 +104,16 @@
 	
 	<s:Label id="timerLabel" horizontalCenter="0" verticalCenter="-40" text="00:00:00" styleName="timeDisplay" />
 	
-	<s:VGroup horizontalCenter="0" verticalCenter="20" verticalCenter.stopped="45">
-		<s:Button x="124" y="178" width="100" 
-				  label="Start"
+	<s:VGroup horizontalCenter="0" verticalCenter="20" verticalCenter.stopped="46">
+		<s:Button x="124" y="178" width="120" height="45"
+				  label="START"
 				  click.default="startTimer()" 
 				  click.started="stopTimer()" 
 				  click.stopped="reStartTimer()"
-				  label.started="Stop"
-				  label.stopped="Restart"/>
-		<s:Button includeIn="stopped" x="124" y="256" width="100" label="Reset"
+				  label.started="STOP"
+				  label.stopped="RESUME"
+				  excludeFrom="finished"/>
+		<s:Button includeIn="stopped,finished" x="124" y="256" width="120" height="45" label="RESET"
 				  click="resetTimer()"/>
 	</s:VGroup>
 	

@@ -12,7 +12,7 @@
 		@namespace s "library://ns.adobe.com/flex/spark";
 		
 		.timeDisplay {
-			fontSize: 60px;
+			fontSize: 50px;
 		}
 	</fx:Style>
 </s:TabbedViewNavigatorApplication>
