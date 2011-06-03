@@ -5,7 +5,7 @@
 		viewDeactivate="onDeactivate(event)"
 		>
 	<fx:Declarations>
-		<mx:DateFormatter id="df" formatString="HH:NN:SS" />
+		<mx:DateFormatter id="df" formatString="LL:NN:SS A" />
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
