@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="Set Timer Value" add="onAdd(event)">
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import model.TimeAmount;
+			import mx.events.FlexEvent;
+			
+			[Bindable]
+			private var amount:TimeAmount;
+			
+			override public function createReturnObject():Object {
+				amount = new TimeAmount(hours.value, minutes.value, seconds.value);
+				return amount;
+			}
+			
+			protected function onAdd(event:FlexEvent):void
+			{
+				if ( data != null ) {
+					amount = data as TimeAmount;
+				} else {
+					amount = new model.TimeAmount(0,0,10);
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:HGroup verticalCenter="-40" horizontalCenter="0" verticalAlign="middle">
+		<s:VGroup>
+			<s:Label text="Hr" />
+			<s:NumericStepper id="hours" maximum="24" value="{amount.hours}" styleName="numStep" />
+		</s:VGroup>
+		<s:VGroup>
+			<s:Label text="Min" />
+			<s:NumericStepper id="minutes" maximum="59" value="{amount.minutes}" styleName="numStep" />
+		</s:VGroup>
+		<s:VGroup>
+			<s:Label text="Sec" />
+			<s:NumericStepper id="seconds" maximum="59" value="{amount.seconds}" styleName="numStep" />
+		</s:VGroup>
+	</s:HGroup>
+	
+	<s:Button width="100" label="Set" click="this.navigator.popView();" horizontalCenter="0"
+			  verticalCenter="30"/>
+</s:View>

@@ -16,48 +16,33 @@
 		<![CDATA[
 			import flash.utils.getTimer;
 			
+			import model.TimeAmount;
+			
 			import spark.events.ViewNavigatorEvent;
 			import spark.managers.PersistenceManager;
 			
 			protected var timer:Timer;
+			protected var amount:TimeAmount;
 			protected var count:int=0;
 			protected var pm:PersistenceManager;
 			
 			protected function onActivate(event:ViewNavigatorEvent):void{
+				amount = new TimeAmount();
 				timer = new Timer(1000,0);
 				timer.addEventListener(TimerEvent.TIMER, onTimer);
-				
 			}
 			
 			protected function onDeactivate(event:ViewNavigatorEvent):void
 			{
-				
 				timer.stop();
 				timer.removeEventListener(TimerEvent.TIMER, onTimer);
 				timer = null;
 			}
 			
 			protected function onTimer(event:TimerEvent = null):void{
-				timerLabel.text = formatTime(timer.currentCount);
-				trace('count: ' + timer.currentCount);
-			}
-			protected function formatTime(i:int):String{
-				
-				if ( i < 60 ){
-					return "00:00:" + leadZero(i%60);
-				}else if ( i < 60*60 ){
-					return "00:" + leadZero(i/60) + ":" + leadZero(i%60);
-				}else if ( i < 100*60*60 ){
-					return leadZero(i/(60*60)) + ":" + leadZero((i/60)%60) + ":" + leadZero(i%60);
-				}
-				return "99:59:59";
-			}
-			protected function leadZero(i:int):String{
-				if ( i < 10){
-					return "0" + i;
-				}else{
-					return i.toString();
-				}
+				amount.increment();
+				timerLabel.text = amount.FormattedTime;
+				trace('count: ' + amount.totalseconds);
 			}
 			protected function onFirstStart():void{
 				onStart();
@@ -72,25 +57,26 @@
 			}
 			protected function onReset():void{
 				currentState=''
+				amount.reset();
 				timerLabel.text ="00:00:00"
 				timer.reset();
 			}
 			
 		]]>
 	</fx:Script>
-	<s:Label id="timerLabel" styleName="timeDisplay" horizontalCenter="0" verticalCenter="-80" text="00:00:00" />
-	<s:VGroup horizontalCenter="0" y="{timerLabel.y+100}">
+	<s:Label id="timerLabel" styleName="timeDisplay" horizontalCenter="0" verticalCenter="-40" text="00:00:00" />
+	<s:VGroup horizontalCenter="0" verticalCenter="20" verticalCenter.stopped="46">
 		<s:Button 
-			label="Start"
+			label="START"
 			label.started="STOP" 
 			label.stopped="START" 
 			click.stopped="onStart()"
 			click.started="onStop()"
 			click.State1="onFirstStart()"
 			
-			width="250" 
-			height="75"/>
-		<s:Button includeIn="stopped" width="250" height="75" label="RESET"
+			width="120" 
+			height="45"/>
+		<s:Button includeIn="stopped" width="120" height="45" label="RESET"
 				  click="onReset()"/>
 	</s:VGroup>
 	
