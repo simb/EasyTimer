@@ -50,6 +50,7 @@
 				timer.removeEventListener(TimerEvent.TIMER, onTick);
 				timer.removeEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
 				timer = null;
+				amount = null;
 			}
 			
 			protected function onTick(event:TimerEvent=null):void 

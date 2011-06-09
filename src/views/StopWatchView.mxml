@@ -19,12 +19,9 @@
 			import model.TimeAmount;
 			
 			import spark.events.ViewNavigatorEvent;
-			import spark.managers.PersistenceManager;
 			
 			protected var timer:Timer;
 			protected var amount:TimeAmount;
-			protected var count:int=0;
-			protected var pm:PersistenceManager;
 			
 			protected function onActivate(event:ViewNavigatorEvent):void{
 				amount = new TimeAmount();
@@ -37,12 +34,13 @@
 				timer.stop();
 				timer.removeEventListener(TimerEvent.TIMER, onTimer);
 				timer = null;
+				amount = null;
 			}
 			
 			protected function onTimer(event:TimerEvent = null):void{
 				amount.increment();
 				timerLabel.text = amount.FormattedTime;
-				trace('count: ' + amount.totalseconds);
+				trace('count: ' + amount.secondsleft);
 			}
 			protected function onFirstStart():void{
 				onStart();

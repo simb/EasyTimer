@@ -65,7 +65,7 @@ package model
 			return _seconds;
 		}
 		
-		public function get timeleft():Object {
+		public function get secondsleft():Object {
 			return _trackseconds;
 		}
 		
